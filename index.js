@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import "dotenv/config";
-import { MongoClient } from 'mongodb';
+import { CURSOR_FLAGS, MongoClient } from 'mongodb';
 
 const app = express();
 const PORT = 5000;
@@ -21,12 +21,24 @@ export async function connectToMongoDB() {
 }
 
 const connectClient = await connectToMongoDB();
-const db = connectClient.db("Cat-Harry");
+const db = connectClient.db("CreativeNest");
+const studiosCollection = db.collection("Studio");
+
+app.post("/add-studio", async(req, res) => {
+  const data = req.body
+  const result = await studiosCollection.insertOne(data);
+  res.send(result);
+});
+
+app.get("/studios", async(req, res) => {
+  const result = await studiosCollection.find().toArray();
+  res.send(result);
+})
 
 app.get("/", (req, res) => {
-    res.send("Server Run Successfully!")
-})
+    res.send({message: "Server Run Successfully!"})
+});
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
-})
+});
