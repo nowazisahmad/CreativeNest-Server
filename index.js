@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import "dotenv/config";
-import { CURSOR_FLAGS, MongoClient } from 'mongodb';
+import { MongoClient, ObjectId } from 'mongodb';
 
 const app = express();
 const PORT = 5000;
@@ -38,6 +38,12 @@ app.get("/studios", async(req, res) => {
 app.get("/featured-studios", async(req, res) => {
   const result = await studiosCollection.find().sort({ createdAt: -1 }).limit(6).toArray();
   res.send(result); 
+});
+
+app.get("/studios/:id", async(req, res) => {
+  const { id } = req.params;
+  const result = await studiosCollection.findOne({ _id: new ObjectId(id),});
+  res.send(result);
 });
 
 app.get("/", (req, res) => {
