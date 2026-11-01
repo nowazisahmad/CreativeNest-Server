@@ -46,6 +46,28 @@ app.get("/studios/:id", async(req, res) => {
   res.send(result);
 });
 
+app.get("/my-studios", async(req, res) => {
+    const email = req.query.email;
+    const result = await studiosCollection.find({ hostEmail: email }).toArray();
+    res.send(result);
+});
+
+app.put("/studios/:id", async(req, res) => {
+    const { id } = req.params;
+    const data = req.body;
+    const result = await studiosCollection.updateOne(
+    { _id: new ObjectId(id) },
+    { $set: data },
+  );
+  res.json(result);
+});
+
+app.delete("/studios/:id", async (req, res) => {
+    const { id } = req.params;
+    const result = await studiosCollection.deleteOne({ _id: new ObjectId(id) });
+    res.send(result);
+});
+
 app.get("/", (req, res) => {
     res.send({message: "Server Run Successfully!"})
 });
@@ -53,3 +75,5 @@ app.get("/", (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
+
+export default app;
