@@ -33,7 +33,12 @@ app.post("/add-studio", async(req, res) => {
 app.get("/studios", async(req, res) => {
   const result = await studiosCollection.find().toArray();
   res.send(result);
-})
+});
+
+app.get("/featured-studios", async(req, res) => {
+  const result = await studiosCollection.find().sort({ createdAt: -1 }).limit(6).toArray();
+  res.send(result); 
+});
 
 app.get("/", (req, res) => {
     res.send({message: "Server Run Successfully!"})
